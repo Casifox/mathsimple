@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maths Spé : Cours Complet</title>
+    
+    <!-- MathJax (Configuration robuste pour affichage mathématique) -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        document.body.classList.add('math-loaded');
+                    });
+                }
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #F5F5F7;
+            --card-bg: #FFFFFF;
+            --text-primary: #1D1D1F;
+            --text-secondary: #86868B;
+            --accent-blue: #0071E3;
+            --accent-purple: #5E5CE6; /* Pour l'intuition */
+            --accent-orange: #FF9500;
+            --accent-green: #34C759;
+            --accent-red: #FF3B30;
+            --nav-bg: rgba(255, 255, 255, 0.8);
+            --radius: 18px;
+            --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-stack);
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: 100px;
+        }
+
+        /* Cache les maths brutes avant chargement */
+        body:not(.math-loaded) .math-tex { opacity: 0; }
+        .math-tex { transition: opacity 0.3s ease; }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: var(--nav-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 980px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo { font-weight: 600; font-size: 1.2rem; color: var(--text-primary); }
+
+        .nav-links { display: flex; gap: 24px; }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--accent-blue); }
+
+        /* --- HEADER --- */
+        header {
+            text-align: center;
+            padding: 80px 20px 60px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #1D1D1F;
+        }
+        header p { color: var(--text-secondary); font-size: 1.2rem; }
+
+        /* --- STRUCTURE --- */
+        .container { max-width: 980px; margin: 0 auto; padding: 0 20px; }
+        section { margin-bottom: 80px; scroll-margin-top: 100px; }
+        h2 { font-size: 2rem; font-weight: 600; margin-bottom: 30px; border-bottom: 2px solid #E5E5EA; padding-bottom: 10px; display: inline-block;}
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            margin-bottom: 30px;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        h3 { font-size: 1.4rem; font-weight: 600; margin-bottom: 20px; color: var(--text-primary); }
+        h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 10px; margin-top: 20px; }
+
+        /* --- BLOCS D'EXPLICATION (INTUITION vs REGLE) --- */
+        .concept-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .block-intuition {
+            background-color: #Fbfbfd;
+            border-left: 4px solid var(--accent-purple);
+            padding: 20px;
+            border-radius: 12px;
+        }
+        
+        .block-math {
+            background-color: #F2F7FF;
+            border-left: 4px solid var(--accent-blue);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .label-intuition { color: var(--accent-purple); }
+        .label-math { color: var(--accent-blue); }
+
+        /* --- TABLEAU --- */
+        .table-wrapper { overflow-x: auto; border-radius: 12px; border: 1px solid #E5E5EA; margin: 20px 0; }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th, td { padding: 14px 20px; text-align: center; border-bottom: 1px solid #E5E5EA; }
+        th { background-color: #FAFAFA; color: var(--text-secondary); font-weight: 600; }
+        .total-row, .total-col { font-weight: 700; color: var(--accent-blue); background: #F9F9F9; }
+
+        /* --- EXERCICE COMPLET (ACCORDEON) --- */
+        .step-box {
+            border: 1px solid #E5E5EA;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            background: white;
+        }
+        .step-header {
+            padding: 15px 20px;
+            background: #FAFAFA;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .step-header:hover { background: #F2F2F7; }
+        .step-content {
+            padding: 20px;
+            display: none;
+            border-top: 1px solid #E5E5EA;
+        }
+        .step-content.active { display: block; }
+        
+        /* --- CANVAS & INPUTS --- */
+        canvas { width: 100%; background: #fff; border-radius: 12px; border: 1px solid #E5E5EA; }
+        input[type=number] { padding: 8px; border-radius: 6px; border: 1px solid #D1D1D6; width: 100px; }
+        
+        .btn {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 99px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: transform 0.1s;
+        }
+        .btn:hover { transform: scale(1.02); }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .concept-grid { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-container">
+        <div class="logo">Maths Spé</div>
+        <div class="nav-links">
+            <a href="#proba">Probabilités</a>
+            <a href="#tableau">Tableau Croisé</a>
+            <a href="#poly">Polynômes</a>
+            <a href="#exercice-complet">Exercice Type</a>
+        </div>
+    </div>
+</nav>
+
+<header>
+    <h1>Comprendre pour réussir.</h1>
+    <p>Cours détaillé et exercices méthodologiques.</p>
+</header>
+
+<div class="container">
+
+    <!-- SECTION 1: PROBABILITÉS -->
+    <section id="proba">
+        <h2>1. Les Probabilités</h2>
+        
+        <div class="card">
+            <h3>L'Univers et les Événements</h3>
+            <div class="concept-grid">
+                <div class="block-intuition">
+                    <span class="label label-intuition">L'Intuition</span>
+                    <p>Imagine un sac de billes. L'univers ($\Omega$), c'est <strong>le sac entier</strong> (toutes les billes).</p>
+                    <p>Un événement ($A$), c'est juste un <strong>groupe de billes</strong> que tu as choisi (ex: les billes rouges).</p>
+                    <p>La probabilité, c'est la taille de ton groupe divisée par la taille du sac.</p>
+                </div>
+                <div class="block-math">
+                    <span class="label label-math">La Règle</span>
+                    <p>Dans une situation d'équiprobabilité :</p>
+                    <p class="math-tex">$$P(A) = \frac{\text{Nombre d'issues favorables à A}}{\text{Nombre total d'issues}}$$</p>
+                    <p>Propriété fondamentale : $0 \leq P(A) \leq 1$.</p>
+                </div>
+            </div>
+
+            <h3>La Probabilité Conditionnelle ($P_B(A)$)</h3>
+            <div class="concept-grid">
+                <div class="block-intuition">
+                    <span class="label label-intuition">L'Intuition</span>
+                    <p>C'est le concept de <strong>"Sachant que"</strong>. On change l'univers !</p>
+                    <p>On ne regarde plus le sac entier. On verse d'abord les billes sur la table et on ne garde <strong>QUE</strong> les billes du groupe B (ex: les billes bleues). Les autres vont à la poubelle.</p>
+                    <p>Maintenant, parmi ces billes bleues restantes, quelle est la chance d'en avoir une qui est AUSSI rayée (A) ?</p>
+                </div>
+                <div class="block-math">
+                    <span class="label label-math">La Formule</span>
+                    <p>La probabilité de $A$ sachant que $B$ est réalisé est :</p>
+                    <p class="math-tex">$$P_B(A) = \frac{P(A \cap B)}{P(B)}$$</p>
+                    <p><strong>A retenir :</strong> La condition ($B$) est toujours au dénominateur (en bas), car elle devient le nouveau "total".</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: LE TABLEAU CROISÉ -->
+    <section id="tableau">
+        <h2>2. Analyse de Données (Tableau Croisé)</h2>
+        
+        <div class="card">
+            <h3>Décryptage d'un Tableau de Contingence</h3>
+            <p style="margin-bottom: 20px; color: var(--text-secondary);">
+                Prenons l'exemple de ton manuel. On étudie les choix d'élèves : <br>
+                Option 1 : Latin ($L$) ou Théâtre ($T$). <br>
+                Option 2 : Italien ($I$) ou Allemand ($A$).
+            </p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Italien ($I$)</th>
+                            <th>Allemand ($A$)</th>
+                            <th class="total-col">Total Ligne</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>Latin ($L$)</th>
+                            <td>30 <br><small style="color:#999">Intersection $L \cap I$</small></td>
+                            <td>120</td>
+                            <td class="total-col">150</td>
+                        </tr>
+                        <tr>
+                            <th>Théâtre ($T$)</th>
+                            <td>90</td>
+                            <td>80</td>
+                            <td class="total-col">170</td>
+                        </tr>
+                        <tr class="total-row">
+                            <th>Total Colonne</th>
+                            <td>120</td>
+                            <td>200</td>
+                            <td>320 <small>(Univers)</small></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="concept-grid">
+                <div class="block-intuition">
+                    <span class="label label-intuition">Comprendre l'Intersection ($\cap$)</span>
+                    <p>L'intersection, c'est le mot <strong>"ET"</strong>. C'est une case précise à l'intérieur du tableau.</p>
+                    <p>Exemple : "Latin <strong>ET</strong> Italien".</p>
+                    <p>Calcul : $\frac{30}{320}$ (Case précise / Grand Total).</p>
+                </div>
+                <div class="block-math">
+                    <span class="label label-math">Comprendre le "Sachant Que"</span>
+                    <p>On se restreint à une ligne ou une colonne.</p>
+                    <p>Exemple : "Sachant qu'il fait du Latin..."</p>
+                    <p>On regarde <strong>uniquement</strong> la ligne Latin. Le total n'est plus 320, mais <strong>150</strong>.</p>
+                    <p>Calcul : $\frac{30}{150}$.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="border: 2px solid var(--accent-blue);">
+            <h3>⚡️ Test d'Indépendance (Exercice Guidé)</h3>
+            <p>La question classique : <em>"Les événements Latin et Allemand sont-ils indépendants ?"</em></p>
+            
+            <div class="step-box">
+                <div class="step-header" onclick="toggleStep('indep1')">Étape 1 : La Logique de l'indépendance (clique ici) ▼</div>
+                <div id="indep1" class="step-content">
+                    <p>Deux événements sont indépendants si le fait de savoir l'un <strong>ne change pas</strong> la probabilité de l'autre.</p>
+                    <p>Mathématiquement, on teste si : $$P(L \cap A) = P(L) \times P(A)$$</p>
+                    <p>Si l'égalité est vraie : Indépendants.<br>Si c'est faux : Liés.</p>
+                </div>
+            </div>
+
+            <div class="step-box">
+                <div class="step-header" onclick="toggleStep('indep2')">Étape 2 : Fais les calculs toi-même ▼</div>
+                <div id="indep2" class="step-content">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                        <div>
+                            <label>Calcul $P(L)$ (Latin / Total)</label><br>
+                            <input type="number" id="inp-PL" placeholder="0.xxx">
+                        </div>
+                        <div>
+                            <label>Calcul $P(A)$ (Allemand / Total)</label><br>
+                            <input type="number" id="inp-PA" placeholder="0.xxx">
+                        </div>
+                        <div>
+                            <label>Calcul $P(L \cap A)$ (Latin ET All. / Total)</label><br>
+                            <input type="number" id="inp-PInter" placeholder="0.xxx">
+                        </div>
+                    </div>
+                    <button class="btn" style="margin-top:15px;" onclick="checkIndependence()">Vérifier</button>
+                    <div id="feedback-indep" style="margin-top:10px; padding:10px; border-radius:8px;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: POLYNÔMES -->
+    <section id="poly">
+        <h2>3. Fonctions Polynômes ($ax^2+bx+c$)</h2>
+        
+        <div class="card">
+            <h3>Les Rôles des Coefficients</h3>
+            <ul style="list-style: none;">
+                <li style="margin-bottom: 10px;">
+                    🔵 <strong>$a$ (Le Directeur)</strong> : Il donne la forme. 
+                    <br>Si $a > 0$, la parabole sourit (∪). Si $a < 0$, elle fait la tête (∩).
+                </li>
+                <li style="margin-bottom: 10px;">
+                    🟠 <strong>$c$ (L'Ordonnée à l'origine)</strong> : C'est l'endroit précis où la courbe coupe l'axe vertical ($y$). C'est le point de départ si $x=0$.
+                </li>
+                <li>
+                    ⚠️ <strong>$\Delta$ (Le Vigile / Discriminant)</strong> : $b^2 - 4ac$. Il décide du nombre de fois où la courbe touche le sol (axe des $x$).
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- SECTION 4: EXERCICE COMPLET -->
+    <section id="exercice-complet">
+        <h2>4. Le "Mega-Exercice" Type Contrôle</h2>
+        <div class="card" style="background: #fff;">
+            <p>Soit la fonction $f$ définie sur $\mathbb{R}$ par :</p>
+            <div style="text-align: center; font-size: 1.5rem; margin: 20px 0; padding: 15px; background: #F2F7FF; border-radius: 12px; color: var(--accent-blue);">
+                $$f(x) = 2x^2 - 8x + 6$$
+            </div>
+            <p><strong>Objectif :</strong> Tout trouver (Racines, Sommet, Tableau de signes, Variations).</p>
+            
+            <!-- ÉTAPE 1 -->
+            <div class="step-box">
+                <div class="step-header" onclick="toggleStep('ex1')">1. Identification des coefficients ▼</div>
+                <div id="ex1" class="step-content">
+                    <p>Avant de foncer, on identifie :</p>
+                    <ul>
+                        <li>$a = 2$ (Positif, donc la parabole sourit ∪).</li>
+                        <li>$b = -8$ (Attention au signe moins !).</li>
+                        <li>$c = 6$.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ÉTAPE 2 -->
+            <div class="step-box">
+                <div class="step-header" onclick="toggleStep('ex2')">2. Calcul du Discriminant ($\Delta$) ▼</div>
+                <div id="ex2" class="step-content">
+                    <p>Formule : $\Delta = b^2 - 4ac$</p>
+                    <p>Calcul : $\Delta = (-8)^2 - 4 \times 2 \times 6$</p>
+                    <p>$\Delta = 64 - 48 = 16$</p>
+                    <p style="color: var(--accent-green); font-weight: bold;">$\Delta > 0$, donc il y a 2 racines distinctes.</p>
+                </div>
+            </div>
+
+            <!-- ÉTAPE 3 -->
+            <div class="step-box">
+                <div class="step-header" onclick="toggleStep('ex3')">3. Calcul des Racines ($x_1$ et $x_2$) ▼</div>
+                <div id="ex3" class="step-content">
+                    <p>Ce sont les points où la courbe touche 0.</p>
+                    <p>$$x_1 = \frac{-b - \sqrt{\Delta}}{2a} = \frac{8 - 4}{4} = \frac{4}{4} = 1$$</p>
+                    <p>$$x_2 = \frac{-b + \sqrt{\Delta}}{2a} = \frac{8 + 4}{4} = \frac{12}{4} = 3$$</p>
+                    <p><strong>Conclusion :</strong> La courbe coupe l'axe horizontal en $x=1$ et $x=3$.</p>
+                </div>
+            </div>
+
+            <!-- ÉTAPE 4 -->
+            <div class="step-box">
+                <div class="step-header" onclick="toggleStep('ex4')">4. Coordonnées du Sommet ($\alpha ; \beta$) ▼</div>
+                <div id="ex4" class="step-content">
+                    <p>Le sommet est le point le plus bas (ou haut) de la courbe.</p>
+                    <p>Abscisse ($\alpha$) : $\alpha = \frac{-b}{2a} = \frac{8}{4} = 2$.</p>
+                    <p>Ordonnée ($\beta$) : On calcule l'image de $\alpha$. <br> $f(2) = 2(2)^2 - 8(2) + 6 = 8 - 16 + 6 = -2$.</p>
+                    <p><strong>Sommet :</strong> $S(2 ; -2)$.</p>
+                </div>
+            </div>
+
+            <!-- ÉTAPE 5 -->
+            <div class="step-box">
+                <div class="step-header" onclick="toggleStep('ex5')">5. Tableau de Signes et Variations ▼</div>
+                <div id="ex5" class="step-content">
+                    <h4>Signe (Règle : Du signe de $a$ à l'extérieur des racines)</h4>
+                    <p>Comme $a=2$ (positif), c'est PLUS à l'extérieur et MOINS entre les racines 1 et 3.</p>
+                    <table style="margin-top:10px; width:100%; text-align:center; border:1px solid #ccc;">
+                        <tr><td width="20%">x</td><td>$-\infty$</td><td>1</td><td>3</td><td>$+\infty$</td></tr>
+                        <tr><td>f(x)</td><td>+</td><td>0 (-) 0</td><td>+</td></tr>
+                    </table>
+
+                    <h4>Variations</h4>
+                    <p>Comme $a > 0$, la fonction est <strong>décroissante</strong> puis <strong>croissante</strong>.</p>
+                    <p>Elle descend de $+\infty$ jusqu'au sommet $-2$, puis remonte vers $+\infty$.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+</div>
+
+<script>
+    // --- FONCTION ACCORDEON ---
+    function toggleStep(id) {
+        const el = document.getElementById(id);
+        if (el.classList.contains('active')) {
+            el.classList.remove('active');
+        } else {
+            el.classList.add('active');
+            // Petit scroll pour bien voir le contenu
+            setTimeout(() => {
+                 el.scrollIntoView({behavior: "smooth", block: "nearest"});
+            }, 100);
+        }
+    }
+
+    // --- VERIFICATION EXERCICE INDEPENDANCE ---
+    function checkIndependence() {
+        const pl = parseFloat(document.getElementById('inp-PL').value);
+        const pa = parseFloat(document.getElementById('inp-PA').value);
+        const pinter = parseFloat(document.getElementById('inp-PInter').value);
+        const feedback = document.getElementById('feedback-indep');
+
+        // Valeurs justes : PL = 150/320 = 0.46875, PA = 200/320 = 0.625, Inter = 120/320 = 0.375
+        const PL_real = 150/320;
+        const PA_real = 200/320;
+        const Inter_real = 120/320;
+        const Produit = PL_real * PA_real;
+
+        // Tolérance erreur
+        const ok = (user, real) => Math.abs(user - real) < 0.02;
+
+        if(isNaN(pl) || isNaN(pa) || isNaN(pinter)) {
+            feedback.innerHTML = "⚠️ Remplis toutes les cases.";
+            feedback.style.background = "#FFF0EF";
+            return;
+        }
+
+        let msg = "";
+        if(!ok(pl, PL_real)) msg += "Erreur sur P(L) (Latin/Total). <br>";
+        if(!ok(pa, PA_real)) msg += "Erreur sur P(A) (All./Total). <br>";
+        if(!ok(pinter, Inter_real)) msg += "Erreur sur P(Inter) (LatinETAll./Total). <br>";
+
+        if(msg === "") {
+            feedback.style.background = "#E4FBF0";
+            feedback.style.color = "#00853E";
+            feedback.innerHTML = `<strong>C'est tout bon !</strong><br>
+            Maintenant compare : <br>
+            $P(L \\cap A) = ${Inter_real.toFixed(3)}$ <br>
+            $P(L) \\times P(A) = ${PL_real.toFixed(3)} \\times ${PA_real.toFixed(3)} = ${Produit.toFixed(3)}$ <br>
+            Les résultats sont différents. Donc <strong>PAS indépendants</strong>.`;
+            if(window.MathJax) MathJax.typesetPromise([feedback]);
+        } else {
+            feedback.style.background = "#FFF0EF";
+            feedback.style.color = "#FF3B30";
+            feedback.innerHTML = msg + "Essaie encore (Total = 320 élèves).";
+        }
+    }
+</script>
+
+</body>
+</html>
