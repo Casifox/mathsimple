@@ -186,7 +186,7 @@
         
         /* --- CANVAS & INPUTS --- */
         canvas { width: 100%; background: #fff; border-radius: 12px; border: 1px solid #E5E5EA; }
-        input[type=number] { padding: 8px; border-radius: 6px; border: 1px solid #D1D1D6; width: 100px; }
+        input[type=text] { padding: 8px; border-radius: 6px; border: 1px solid #D1D1D6; width: 100px; } /* Changed to text to handle comma better manually if needed, but number is safer with replacing */
         
         .btn {
             background-color: var(--accent-blue);
@@ -345,22 +345,23 @@
             <div class="step-box">
                 <div class="step-header" onclick="toggleStep('indep2')">Étape 2 : Fais les calculs toi-même ▼</div>
                 <div id="indep2" class="step-content">
+                    <p style="font-size:0.9rem; color:#666; margin-bottom:10px;">Astuce : Tu peux utiliser la virgule ou le point.</p>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap:10px;">
                         <div>
                             <label>Calcul $P(L)$ (Latin / Total)</label><br>
-                            <input type="number" id="inp-PL" placeholder="0.xxx">
+                            <input type="text" id="inp-PL" placeholder="Ex: 0.46">
                         </div>
                         <div>
                             <label>Calcul $P(A)$ (Allemand / Total)</label><br>
-                            <input type="number" id="inp-PA" placeholder="0.xxx">
+                            <input type="text" id="inp-PA" placeholder="Ex: 0.62">
                         </div>
                         <div>
                             <label>Calcul $P(L \cap A)$ (Latin ET All. / Total)</label><br>
-                            <input type="number" id="inp-PInter" placeholder="0.xxx">
+                            <input type="text" id="inp-PInter" placeholder="Ex: 0.37">
                         </div>
                     </div>
                     <button class="btn" style="margin-top:15px;" onclick="checkIndependence()">Vérifier</button>
-                    <div id="feedback-indep" style="margin-top:10px; padding:10px; border-radius:8px;"></div>
+                    <div id="feedback-indep" style="margin-top:10px; padding:10px; border-radius:8px; display:none;"></div>
                 </div>
             </div>
         </div>
@@ -482,10 +483,19 @@
 
     // --- VERIFICATION EXERCICE INDEPENDANCE ---
     function checkIndependence() {
-        const pl = parseFloat(document.getElementById('inp-PL').value);
-        const pa = parseFloat(document.getElementById('inp-PA').value);
-        const pinter = parseFloat(document.getElementById('inp-PInter').value);
+        // Fonction interne pour nettoyer l'entrée (virgule -> point)
+        const parseVal = (id) => {
+            let val = document.getElementById(id).value;
+            if(!val) return NaN;
+            return parseFloat(val.replace(',', '.'));
+        };
+
+        const pl = parseVal('inp-PL');
+        const pa = parseVal('inp-PA');
+        const pinter = parseVal('inp-PInter');
         const feedback = document.getElementById('feedback-indep');
+
+        feedback.style.display = 'block';
 
         // Valeurs justes : PL = 150/320 = 0.46875, PA = 200/320 = 0.625, Inter = 120/320 = 0.375
         const PL_real = 150/320;
@@ -493,34 +503,49 @@
         const Inter_real = 120/320;
         const Produit = PL_real * PA_real;
 
-        // Tolérance erreur
+        // Tolérance erreur (2%)
         const ok = (user, real) => Math.abs(user - real) < 0.02;
 
         if(isNaN(pl) || isNaN(pa) || isNaN(pinter)) {
-            feedback.innerHTML = "⚠️ Remplis toutes les cases.";
+            feedback.innerHTML = "⚠️ Remplis toutes les cases (utilise un point ou une virgule pour les nombres).";
             feedback.style.background = "#FFF0EF";
+            feedback.style.color = "#FF3B30";
             return;
         }
 
         let msg = "";
-        if(!ok(pl, PL_real)) msg += "Erreur sur P(L) (Latin/Total). <br>";
-        if(!ok(pa, PA_real)) msg += "Erreur sur P(A) (All./Total). <br>";
-        if(!ok(pinter, Inter_real)) msg += "Erreur sur P(Inter) (LatinETAll./Total). <br>";
+        let hasError = false;
 
-        if(msg === "") {
+        // Vérification détaillée avec affichage de la bonne réponse si faux
+        if(!ok(pl, PL_real)) {
+            msg += `❌ <strong>Erreur sur P(L)</strong> : Tu as mis ${pl}.<br>La bonne réponse est 150/320 $\\approx$ <strong>${PL_real.toFixed(3)}</strong>.<br><br>`;
+            hasError = true;
+        }
+        if(!ok(pa, PA_real)) {
+            msg += `❌ <strong>Erreur sur P(A)</strong> : Tu as mis ${pa}.<br>La bonne réponse est 200/320 = <strong>${PA_real.toFixed(3)}</strong>.<br><br>`;
+            hasError = true;
+        }
+        if(!ok(pinter, Inter_real)) {
+            msg += `❌ <strong>Erreur sur P(L $\\cap$ A)</strong> : Tu as mis ${pinter}.<br>La bonne réponse est 120/320 = <strong>${Inter_real.toFixed(3)}</strong>.<br><br>`;
+            hasError = true;
+        }
+
+        if(!hasError) {
             feedback.style.background = "#E4FBF0";
             feedback.style.color = "#00853E";
-            feedback.innerHTML = `<strong>C'est tout bon !</strong><br>
-            Maintenant compare : <br>
+            feedback.innerHTML = `✅ <strong>Tout est correct !</strong><br>
+            Comparaison finale : <br>
             $P(L \\cap A) = ${Inter_real.toFixed(3)}$ <br>
             $P(L) \\times P(A) = ${PL_real.toFixed(3)} \\times ${PA_real.toFixed(3)} = ${Produit.toFixed(3)}$ <br>
-            Les résultats sont différents. Donc <strong>PAS indépendants</strong>.`;
-            if(window.MathJax) MathJax.typesetPromise([feedback]);
+            <strong>Conclusion :</strong> $0.375 \\neq 0.293$. Les événements ne sont <strong>PAS indépendants</strong>.`;
         } else {
             feedback.style.background = "#FFF0EF";
             feedback.style.color = "#FF3B30";
-            feedback.innerHTML = msg + "Essaie encore (Total = 320 élèves).";
+            feedback.innerHTML = msg + "Corrige tes valeurs pour voir la conclusion !";
         }
+        
+        // Rafraichir les maths dans le feedback
+        if(window.MathJax) MathJax.typesetPromise([feedback]);
     }
 </script>
 
