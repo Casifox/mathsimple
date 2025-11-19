@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maths Simplifiées - Probabilités & Polynômes</title>
+    <!-- Chargement de la police Inter pour un look moderne et clair -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Définition des couleurs pastel et de la typographie */
+        :root {
+            --color-primary: #8E9AAF; /* Bleu gris principal */
+            --color-secondary: #C3B1E1; /* Lavande */
+            --color-accent: #FFD3B5; /* Pêche */
+            --color-success: #A8DADC; /* Vert eau */
+            --color-error: #FF6666; /* Rouge pastel */
+            --color-bg: #F4F4F9; /* Gris très clair */
+            --color-text: #2D3142; /* Noir très foncé */
+            --color-card-bg: #FFFFFF;
+            --font-family: 'Inter', sans-serif;
+            --border-radius: 12px;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            margin: 0;
+            padding-top: 60px; /* Espace pour la barre de navigation fixe */
+            line-height: 1.6;
+        }
+
+        /* En-tête de navigation fixe */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--color-card-bg);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            padding: 0 20px;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text);
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        nav button:hover, nav button.active {
+            color: var(--color-primary);
+        }
+
+        nav button.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 3px;
+            background-color: var(--color-primary);
+            border-radius: 2px 2px 0 0;
+        }
+
+        /* Contenu principal et sections */
+        main {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        section {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--color-text);
+            border-bottom: 2px solid var(--color-secondary);
+            padding-bottom: 5px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            color: var(--color-primary);
+            margin-top: 25px;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        /* Cartes d'explication (style "débile") */
+        .card {
+            background-color: var(--color-card-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+        }
+
+        .alert-box {
+            background-color: var(--color-accent);
+            padding: 15px;
+            border-left: 5px solid var(--color-primary);
+            border-radius: var(--border-radius);
+            margin: 20px 0;
+            font-weight: 600;
+        }
+        
+        /* Bouton générique pour les interactions */
+        .btn {
+            background-color: var(--color-primary);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            background-color: #6c7a89;
+        }
+
+        .btn-secondary {
+            background-color: var(--color-secondary);
+            margin-left: 10px;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #9f8cbf;
+        }
+        
+        /* Conteneurs pour exercices et quiz */
+        .exercise-container, .quiz-question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px dashed var(--color-secondary);
+            border-radius: var(--border-radius);
+        }
+        
+        .feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        
+        .feedback.correct {
+            background-color: var(--color-success);
+            color: var(--color-text);
+        }
+        
+        .feedback.error {
+            background-color: var(--color-error);
+            color: white;
+        }
+        
+        /* Formule Math Simples (pour remplacer LaTeX) */
+        .math-formula {
+            display: inline-block;
+            background-color: #f0f0f5;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-family: monospace;
+            margin: 5px 0;
+        }
+        .math-display {
+            display: block;
+            text-align: center;
+            font-size: 1.3rem;
+            margin: 15px 0;
+        }
+        .fraction {
+            display: inline-block;
+            vertical-align: middle;
+            text-align: center;
+            padding: 0 5px;
+        }
+        .fraction > span {
+            display: block;
+            border-bottom: 2px solid var(--color-text);
+            line-height: 1.1;
+        }
+
+        /* Style spécifique pour l'Arbre de Probabilité */
+        .tree-diagram {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px 20px;
+            text-align: center;
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+        .tree-item {
+            position: relative;
+            padding: 10px;
+        }
+        .tree-item.start {
+            grid-column: 1 / span 3;
+            background-color: var(--color-primary);
+            color: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .tree-item.level-2 {
+            grid-column: span 1;
+            background-color: var(--color-secondary);
+            color: var(--color-text);
+            border-radius: 8px;
+        }
+        .tree-prob {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: var(--color-text);
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-bg);
+            padding: 0 5px;
+        }
+
+        /* Graphique des Polynômes */
+        .graph-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #e0f7fa; /* Fond léger pour les contrôles */
+            border-radius: var(--border-radius);
+        }
+        .slider-group {
+            flex: 1 1 150px;
+            min-width: 150px;
+        }
+        .slider-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        #graphCanvas {
+            border: 2px solid var(--color-primary);
+            border-radius: var(--border-radius);
+            background-color: white;
+            display: block;
+            width: 100%;
+            height: 400px;
+        }
+        #equationDisplay {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-top: 15px;
+            text-align: center;
+            color: var(--color-primary);
+        }
+        #analysisText {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: var(--color-accent);
+            border-radius: var(--border-radius);
+        }
+        
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            nav {
+                justify-content: space-around;
+            }
+            nav button {
+                padding: 10px;
+                font-size: 0.8rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .graph-controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav id="navbar">
+            <button data-section="accueil" class="active">🏠 Accueil</button>
+            <button data-section="proba">🧮 Probabilités</button>
+            <button data-section="polynome">📐 Polynômes</button>
+            <button data-section="exercices">🧠 Exercices</button>
+            <button data-section="quiz">❓ Mini-quiz</button>
+        </nav>
+    </header>
+
+    <main>
+        <!-- ============================================== -->
+        <!-- SECTION 1: ACCUEIL -->
+        <!-- ============================================== -->
+        <section id="accueil" class="active">
+            <h1>Le Labo des Maths Simples 🧪</h1>
+            <p style="text-align: center; font-size: 1.2rem; margin-top: 20px;">
+                Bienvenue dans ton espace pour débloquer les maths de Première Spé ! Ici, on oublie les formules complexes et on passe aux explications "débiles mais ultra claires".
+            </p>
+
+            <div class="card" style="margin-top: 40px; text-align: center;">
+                <p style="font-size: 1.5rem; color: var(--color-primary);">
+                    👉 Clique sur un onglet ci-dessus pour commencer à simplifier ta vie !
+                </p>
+            </div>
+
+            <div class="alert-box">
+                <p><strong>Règle d'or :</strong> Si tu ne comprends pas, c'est que l'explication n'était pas assez simple. On va y remédier ! Prépare-toi à voir des chaussettes dépareillées et des gâteaux qui explosent. 🧁</p>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- SECTION 2: PROBABILITÉS -->
+        <!-- ============================================== -->
+        <section id="proba">
+            <h1>🧮 Probabilités : Le B.A.-BA de la Chance</h1>
+
+            <h2>1. Les bases : Ton tirage au sort de bonbons</h2>
+            
+            <div class="card">
+                <h3>Le concept "débile" de la Probabilité</h3>
+                <p style="font-size: 1.1rem;">
+                    Imagine que tu as un sac de 10 bonbons. 3 sont au citron 🍋, 7 sont à la fraise 🍓.<br>
+                    <strong>La probabilité de tirer un citron, c'est juste :</strong>
+                    <div class="math-display">
+                        <span class="math-formula">
+                            Probabilité (Citron) = 
+                            <span class="fraction">
+                                <span>Combien de Citrons (3)</span>
+                                <span>Total de Bonbons (10)</span>
+                            </span>
+                            = 0.3
+                        </span>
+                    </div>
+                    C'est tout !
+                </p>
+            </div>
+            
+            <div class="card">
+                <h3>Définitions Simplifiées</h3>
+                <ul>
+                    <li><strong>Univers ($\Omega$) :</strong> C'est la liste de *tout* ce qui peut arriver. Si tu lances un dé, $\Omega = \{1, 2, 3, 4, 5, 6\}$. 🎲</li>
+                    <li><strong>Issue :</strong> Un seul résultat possible. Ex: Tirer un 3. Ex: Tirer le bonbon à la fraise n°1. C'est l'unité de base.</li>
+                    <li><strong>Événement :</strong> Un groupe d'issues que tu as décidé de rassembler. Ex: "Tirer un nombre pair" est l'événement $\{2, 4, 6\}$. </li>
+                </ul>
+            </div>
+            
+            <div class="alert-box">
+                <p><strong>À retenir absolument :</strong> Une probabilité est <strong>toujours</strong> un nombre entre 0 (impossible) et 1 (sûr à 100%).</p>
+            </div>
+
+            <h2>2. Modèle Équiprobable : Quand tout le monde a la même chance</h2>
+            <div class="card">
+                <p>
+                    <strong>Définition :</strong> C'est quand chaque issue a exactement la même chance de sortir.
+                </p>
+                <p style="font-style: italic;">
+                    <strong>Exemple débile :</strong> Tu as 6 amis. Tu dois choisir qui passe l'aspirateur. Si tu tires au sort avec un dé, chacun a 1/6 chance. Le dé est <strong>équiprobable</strong>.
+                </p>
+                <p>
+                    Dans un modèle équiprobable, pour un événement A :
+                    <div class="math-display">
+                        <span class="math-formula">
+                            P(A) = 
+                            <span class="fraction">
+                                <span>Nombre d'issues dans A</span>
+                                <span>Nombre total d'issues</span>
+                            </span>
+                        </span>
+                    </div>
+                </p>
+            </div>
+
+            <h2>3. Probabilités Conditionnelles : La chance "après" qu'un truc se soit passé</h2>
+            <div class="card">
+                <h3>P(B | A) : Lire "Probabilité de B sachant A"</h3>
+                <p>
+                    <strong>Explication débile :</strong> Tu cherches la probabilité de B, mais tu sais déjà que A s'est produit. Ça change l'Univers de référence !
+                </p>
+                <p style="font-style: italic;">
+                    <strong>Exemple :</strong> Tu as 10 chaussettes (5 Paires). 4 sont noires 🖤, 6 sont blanches 🤍.
+                    <br>Tu tires une chaussette. C'est une Noire (Événement A).
+                    <br>Maintenant, tu veux la probabilité que la prochaine soit Noire (Événement B).
+                    <br><strong>L'Univers a changé !</strong> Il te reste 9 chaussettes, dont seulement 3 noires.
+                    <div class="math-display">
+                        <span class="math-formula">
+                            P(B sachant A) = 
+                            <span class="fraction">
+                                <span>P(A et B)</span>
+                                <span>P(A)</span>
+                            </span>
+                        </span>
+                        <br>
+                        <span class="math-formula">
+                            P(Noire 2e sachant Noire 1e) = 3/9 = 1/3
+                        </span>
+                    </div>
+                </p>
+            </div>
+            
+            <h2>4. Arbres de Probabilité : La carte du destin</h2>
+            <div class="card">
+                <p>Un arbre de probabilité, c'est comme une carte qui t'aide à calculer des probabilités en plusieurs étapes. Chaque branche représente une probabilité (le pourcentage de chance que cette branche soit prise). </p>
+
+                <p style="font-weight: 600;">Règles de l'Arbre :</p>
+                <ul>
+                    <li><strong>Sur une branche :</strong> On multiplie les probabilités pour trouver P(Chemin Complet).</li>
+                    <li><strong>À la fin :</strong> On additionne les probabilités des chemins qui t'intéressent.</li>
+                </ul>
+
+                <h3>Exemple visuel : Le Tirage de Bonbons (Citron/Fraise, puis Re-tirage)</h3>
+                
+                <div class="tree-diagram">
+                    <div class="tree-item start">Départ (Sac de 10)</div>
+                    
+                    <!-- 1er Tirage -->
+                    <div class="tree-item" style="grid-column: 1 / span 1;">
+                        <span class="tree-prob" style="left: 60%;">P=0.3</span>
+                        <div class="level-2">🍋 Citron (C)</div>
+                    </div>
+                    <div class="tree-item" style="grid-column: 3 / span 1;">
+                        <span class="tree-prob" style="left: 40%;">P=0.7</span>
+                        <div class="level-2">🍓 Fraise (F)</div>
+                    </div>
+                    
+                    <!-- 2e Tirage (Simplifié pour la démo) -->
+                    <div class="tree-item" style="grid-column: 1 / span 1; margin-top: 30px;">
+                        <span class="tree-prob" style="left: 60%;">P(C|C)</span>
+                        <div class="level-2" style="background-color: #A8DADC;">🍋🍋</div>
+                    </div>
+                    <div class="tree-item" style="grid-column: 1 / span 1; margin-top: 30px;">
+                        <span class="tree-prob" style="left: 60%;">P(F|C)</span>
+                        <div class="level-2" style="background-color: #FFD3B5;">🍋🍓</div>
+                    </div>
+                    <div class="tree-item" style="grid-column: 3 / span 1; margin-top: 30px;">
+                        <span class="tree-prob" style="left: 40%;">P(C|F)</span>
+                        <div class="level-2" style="background-color: #A8DADC;">🍓🍋</div>
+                    </div>
+                    <div class="tree-item" style="grid-column: 3 / span 1; margin-top: 30px;">
+                        <span class="tree-prob" style="left: 40%;">P(F|F)</span>
+                        <div class="level-2" style="background-color: #FFD3B5;">🍓🍓</div>
+                    </div>
+                    
+                    <p style="grid-column: 1 / span 1; font-weight: 600;">P(C) x P(C|C)</p>
+                    <p style="grid-column: 3 / span 1; font-weight: 600;">P(F) x P(C|F)</p>
+
+                    <!-- Les probabilités conditionnelles et totales sont calculées en suivant les branches. -->
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ============================================== -->
+        <!-- SECTION 3: FONCTIONS POLYNÔMES -->
+        <!-- ============================================== -->
+        <section id="polynome">
+            <h1>📐 Fonctions Polynômes : Le Gâteau Magique</h1>
+
+            <h2>1. Définition et Vocabulaire</h2>
+            <div class="card">
+                <h3>Le concept "débile" du Polynôme</h3>
+                <p style="font-size: 1.1rem;">
+                    Un polynôme, c'est comme une recette de cuisine pour faire un gâteau (la courbe du graphe).
+                    <br>Chaque ingrédient est un <strong>terme</strong> : $3x^2$ est un terme, $-5x$ est un terme, $4$ est un terme.
+                    <br>La <strong>puissance</strong> la plus élevée (l'exposant max) te donne le <strong>degré</strong> du polynôme.
+                    <br>
+                    <div class="math-display">
+                        <span class="math-formula">f(x) = <span style="color:red">2</span>x³ - 4x² + 7x - 1</span>
+                    </div>
+                    Ce polynôme est de <strong>degré 3</strong> (à cause du x³).
+                </p>
+                <p class="alert-box">
+                    <strong>Forme Développée :</strong> Tous les ingrédients sont mélangés et cuits (comme ci-dessus).<br>
+                    <strong>Forme Factorisée :</strong> La recette est écrite avec les étapes finales (les racines, voir ci-dessous). Ex: $f(x) = a(x - \text{racine}_1)(x - \text{racine}_2)$.
+                </p>
+            </div>
+
+            <h2>2. Les Racines : L'endroit où le graph touche le sol (y=0)</h2>
+            <div class="card">
+                <p>
+                    Une <strong>racine</strong>, c'est le nombre $x$ qui fait que $f(x) = 0$. C'est l'endroit magique où ta courbe traverse (ou touche) l'axe des abscisses.
+                </p>
+                <p style="font-style: italic;">
+                    <strong>Polynôme du second degré ($ax^2 + bx + c$) :</strong> On utilise le célèbre $\mathbf{\Delta}$ (Delta, le "discrédible" !)
+                    <div class="math-display">
+                        <span class="math-formula">\Delta = b^2 - 4ac</span>
+                    </div>
+                    <ul>
+                        <li>Si $\Delta > 0$ : 2 racines (le graphe coupe le sol 2 fois). ✌️</li>
+                        <li>Si $\Delta = 0$ : 1 racine (le graphe touche le sol 1 fois, comme un rebond). 👆</li>
+                        <li>Si $\Delta < 0$ : 0 racine (le graphe flotte en l'air et ne touche jamais le sol). 🎈</li>
+                    </ul>
+                </p>
+            </div>
+
+            <h2>3. La Dérivée : Le guide de la Pente</h2>
+            <div class="card">
+                <h3>$f'(x)$ : La Pente de ta Course de Ski</h3>
+                <p>
+                    La dérivée $f'(x)$ est la formule qui te donne la <strong>pente exacte</strong> de ta courbe à n'importe quel point $x$.
+                </p>
+                <p style="font-style: italic;">
+                    <strong>Exemple débile :</strong> Tu es sur un snowboard 🏂 sur la courbe du polynôme. La dérivée te dit si tu es en train de monter (pente positive), de descendre (pente négative), ou si tu es au sommet/creux et à l'arrêt (pente nulle, $f'(x)=0$).
+                </p>
+                
+                <p><strong>Règles de dérivation (simples) :</strong></p>
+                <ul>
+                    <li>Dérivée de $x^n$ est $n \cdot x^{n-1}$</li>
+                    <li>Dérivée de $x$ est $1$</li>
+                    <li>Dérivée d'une constante (un nombre sans $x$) est $0$</li>
+                </ul>
+                <p>
+                    <div class="math-display">
+                        <span class="math-formula">Si f(x) = 3x² - 5x + 4</span>
+                        <span class="math-formula">Alors f'(x) = 6x - 5</span>
+                    </div>
+                </p>
+            </div>
+            
+            <h2>4. Graphique Interactif : Deviens le Maître du $ax^2 + bx + c$</h2>
+            <p>Modifie les coefficients $a$, $b$ et $c$ ci-dessous pour voir comment la courbe se déforme. C'est magique !</p>
+
+            <div class="graph-controls">
+                <div class="slider-group">
+                    <label for="sliderA">Coefficient a : <span id="valA">1.0</span></label>
+                    <input type="range" id="sliderA" min="-2" max="2" step="0.1" value="1.0">
+                </div>
+                <div class="slider-group">
+                    <label for="sliderB">Coefficient b : <span id="valB">0.0</span></label>
+                    <input type="range" id="sliderB" min="-10" max="10" step="0.1" value="0.0">
+                </div>
+                <div class="slider-group">
+                    <label for="sliderC">Coefficient c : <span id="valC">0.0</span></label>
+                    <input type="range" id="sliderC" min="-10" max="10" step="0.1" value="0.0">
+                </div>
+            </div>
+
+            <canvas id="graphCanvas"></canvas>
+            
+            <p id="equationDisplay"></p>
+            
+            <div id="analysisText">
+                <strong>Analyse de la courbe :</strong> Le sommet est en... Les racines sont...
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- SECTION 4: EXERCICES INTERACTIFS -->
+        <!-- ============================================== -->
+        <section id="exercices">
+            <h1>🧠 Entraînement Simplifié : Probabilités & Polynômes</h1>
+            
+            <h2>Exercice 1 : Probabilités (Les Chaussettes Dépareillées)</h2>
+            <div class="exercise-container">
+                <p>Tu as un tiroir avec 5 paires de chaussettes, soit 10 chaussettes au total : 6 Noires (N) et 4 Blanches (B).</p>
+                <p><strong>Question A :</strong> Quelle est la probabilité de tirer une chaussette Noire au premier tirage ? (Réponse en décimal)</p>
+                <input type="number" id="exo1a" step="0.01" placeholder="Ex: 0.6">
+                
+                <p><strong>Question B :</strong> Sachant que tu as déjà tiré une Noire et que tu ne l'as pas remise, quelle est la probabilité de tirer une deuxième Noire ? (Réponse en fraction simplifiée, ex: 5/9)</p>
+                <input type="text" id="exo1b" placeholder="Ex: 5/9">
+                
+                <button class="btn" onclick="checkExo1()">Vérifier l'Exo 1</button>
+                <div id="feedback1" class="feedback" style="display: none;"></div>
+            </div>
+            
+            <h2>Exercice 2 : Polynômes (La Dérivée Express)</h2>
+            <div class="exercise-container">
+                <p>Soit la fonction polynôme $f(x) = 4x^3 - 2x^2 + 8x - 10$.</p>
+                <p>Quelle est l'expression de la dérivée $f'(x)$ ? (Entre les termes avec les bons coefficients)</p>
+                <p>
+                    $f'(x) = $ 
+                    <input type="number" id="derivX2" style="width: 50px;"> $x^2 + $ 
+                    <input type="number" id="derivX1" style="width: 50px;"> $x + $ 
+                    <input type="number" id="derivC" style="width: 50px;">
+                </p>
+                <button class="btn" onclick="checkExo2()">Vérifier l'Exo 2</button>
+                <div id="feedback2" class="feedback" style="display: none;"></div>
+            </div>
+
+        </section>
+
+        <!-- ============================================== -->
+        <!-- SECTION 5: MINI-QUIZ -->
+        <!-- ============================================== -->
+        <section id="quiz">
+            <h1>❓ Mini-quiz : Teste ta Puissance !</h1>
+            <p>Réponds aux 10 questions pour évaluer ta compréhension.</p>
+            
+            <div id="quizContainer">
+                <!-- Les questions seront générées ici par JavaScript -->
+            </div>
+            
+            <button class="btn" onclick="submitQuiz()">Terminer le Quiz</button>
+            
+            <div id="quizResult" class="card" style="margin-top: 30px; display: none; text-align: center;">
+                <h2>Ton Score : <span id="quizScore"></span> / 10</h2>
+                <p id="quizMessage"></p>
+                <button class="btn btn-secondary" onclick="resetQuiz()">Recommencer</button>
+            </div>
+        </section>
+        
+    </main>
+
+    <script>
+        // ==============================================
+        // JAVASCRIPT VANILLA - LOGIQUE DU SITE
+        // ==============================================
+        
+        // ----------------------------------------------
+        // 1. GESTION DE LA NAVIGATION (SPA Simulation)
+        // ----------------------------------------------
+        const sections = document.querySelectorAll('main section');
+        const navButtons = document.querySelectorAll('#navbar button');
+
+        function showSection(sectionId) {
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            navButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            document.getElementById(sectionId).classList.add('active');
+            document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        navButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const sectionId = e.target.getAttribute('data-section');
+                showSection(sectionId);
+                // Si on va sur la section polynôme, on s'assure que le graphique est initialisé
+                if (sectionId === 'polynome') {
+                    if (!window.isGraphInitialized) {
+                        initGraph();
+                    }
+                } else if (sectionId === 'quiz') {
+                    if (document.getElementById('quizContainer').innerHTML === "") {
+                        generateQuiz();
+                    }
+                }
+            });
+        });
+
+
+        // ----------------------------------------------
+        // 2. GESTION DES EXERCICES
+        // ----------------------------------------------
+        
+        // --- Exercice 1: Probabilités ---
+        function checkExo1() {
+            const feedbackDiv = document.getElementById('feedback1');
+            const answerA = parseFloat(document.getElementById('exo1a').value);
+            const answerB = document.getElementById('exo1b').value.trim();
+            
+            let isCorrect = true;
+            let message = "Résultats : ";
+            
+            // Question A: P(N) = 6/10 = 0.6
+            if (Math.abs(answerA - 0.6) < 0.001) {
+                message += "A) Correct (0.6). ";
+            } else {
+                message += "A) Faux (Réponse attendue : 0.6). ";
+                isCorrect = false;
+            }
+
+            // Question B: P(N2 | N1) = 5/9. On accepte '5/9', '0.555...'
+            const expectedFraction = 5/9;
+            const isFractionCorrect = answerB === '5/9';
+            const isDecimalCorrect = Math.abs(parseFloat(answerB) - expectedFraction) < 0.001;
+
+            if (isFractionCorrect || isDecimalCorrect) {
+                message += "B) Correct (5/9 ou ~0.556).";
+            } else {
+                message += "B) Faux (Réponse attendue : 5/9).";
+                isCorrect = false;
+            }
+
+            feedbackDiv.style.display = 'block';
+            if (isCorrect) {
+                feedbackDiv.className = 'feedback correct';
+                feedbackDiv.innerHTML = "🎉 Bravo ! " + message;
+            } else {
+                feedbackDiv.className = 'feedback error';
+                feedbackDiv.innerHTML = "🙁 Oups. " + message;
+            }
+        }
+        
+        // --- Exercice 2: Polynômes ---
+        function checkExo2() {
+            const feedbackDiv = document.getElementById('feedback2');
+            const valX2 = parseInt(document.getElementById('derivX2').value);
+            const valX1 = parseInt(document.getElementById('derivX1').value);
+            const valC = parseInt(document.getElementById('derivC').value);
+            
+            // f(x) = 4x³ - 2x² + 8x - 10
+            // f'(x) = (4*3)x² - (2*2)x + 8 = 12x² - 4x + 8
+            
+            const correctX2 = 12;
+            const correctX1 = -4;
+            const correctC = 8;
+            
+            const isCorrect = valX2 === correctX2 && valX1 === correctX1 && valC === correctC;
+            
+            feedbackDiv.style.display = 'block';
+            if (isCorrect) {
+                feedbackDiv.className = 'feedback correct';
+                feedbackDiv.innerHTML = "🥳 Nickel ! La dérivée est bien 12x² - 4x + 8.";
+            } else {
+                feedbackDiv.className = 'feedback error';
+                feedbackDiv.innerHTML = `❌ Pas tout à fait. 4x³ → 12x². -2x² → -4x. 8x → 8. (Réponse attendue: 12, -4, 8).`;
+            }
+        }
+
+        // ----------------------------------------------
+        // 3. GESTION DU GRAPHIQUE INTERACTIF (Polynômes)
+        // ----------------------------------------------
+        
+        let canvas, ctx, a = 1, b = 0, c = 0;
+        const scaleX = 20; // 20 pixels par unité
+        const scaleY = 20;
+        const centerX = 200;
+        const centerY = 200;
+
+        function updateCoefficients() {
+            a = parseFloat(document.getElementById('sliderA').value);
+            b = parseFloat(document.getElementById('sliderB').value);
+            c = parseFloat(document.getElementById('sliderC').value);
+
+            document.getElementById('valA').textContent = a.toFixed(1);
+            document.getElementById('valB').textContent = b.toFixed(1);
+            document.getElementById('valC').textContent = c.toFixed(1);
+
+            updateGraph();
+            updateAnalysis();
+        }
+
+        function drawAxis() {
+            // Axe X
+            ctx.beginPath();
+            ctx.strokeStyle = '#999';
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(canvas.width, centerY);
+            ctx.stroke();
+
+            // Axe Y
+            ctx.beginPath();
+            ctx.moveTo(centerX, 0);
+            ctx.lineTo(centerX, canvas.height);
+            ctx.stroke();
+
+            // Marqueurs
+            ctx.fillStyle = '#666';
+            ctx.font = '10px Inter';
+            for (let i = -10; i <= 10; i++) {
+                if (i !== 0) {
+                    // X markers
+                    ctx.fillText(i, centerX + i * scaleX - 5, centerY + 15);
+                    ctx.fillRect(centerX + i * scaleX, centerY - 2, 1, 4);
+                    // Y markers
+                    ctx.fillText(-i, centerX + 5, centerY + i * scaleY + 4);
+                    ctx.fillRect(centerX - 2, centerY + i * scaleY, 4, 1);
+                }
+            }
+        }
+
+        function f(x) {
+            // Fonction du polynôme de degré 2 : ax² + bx + c
+            return a * x * x + b * x + c;
+        }
+
+        function updateGraph() {
+            // Nettoyer et redessiner
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawAxis();
+
+            // Dessiner la courbe
+            ctx.beginPath();
+            ctx.strokeStyle = varToRgb('--color-primary');
+            ctx.lineWidth = 3;
+            
+            // Parcourir l'axe des X de l'écran
+            for (let px = 0; px < canvas.width; px++) {
+                // Convertir les pixels en unités mathématiques (x)
+                const x = (px - centerX) / scaleX;
+                // Calculer la valeur y
+                const y = f(x);
+                // Convertir la valeur y en pixels (py), inversion de l'axe Y
+                const py = centerY - y * scaleY;
+
+                if (px === 0) {
+                    ctx.moveTo(px, py);
+                } else {
+                    ctx.lineTo(px, py);
+                }
+            }
+            ctx.stroke();
+
+            // Afficher l'équation
+            document.getElementById('equationDisplay').textContent = 
+                `f(x) = ${a.toFixed(1)}x² ${b >= 0 ? '+' : ''}${b.toFixed(1)}x ${c >= 0 ? '+' : ''}${c.toFixed(1)}`;
+        }
+
+        function updateAnalysis() {
+            const analysisDiv = document.getElementById('analysisText');
+            let analysis = "";
+            let discriminant = b * b - 4 * a * c;
+
+            // 1. Sens d'ouverture (Variations)
+            if (a === 0) {
+                analysis += `<p>Si a=0, ce n'est plus une parabole, c'est une <strong>droite</strong> ! (Fonction affine).</p>`;
+            } else if (a > 0) {
+                analysis += `<p><strong>Forme :</strong> La parabole est "ouverte vers le haut" (comme un bol 🥣). Elle est d'abord décroissante puis croissante (minimum).</p>`;
+            } else { // a < 0
+                analysis += `<p><strong>Forme :</strong> La parabole est "ouverte vers le bas" (comme un pont 🌉). Elle est d'abord croissante puis décroissante (maximum).</p>`;
+            }
+
+            // 2. Sommet
+            if (a !== 0) {
+                const sommetX = -b / (2 * a);
+                const sommetY = f(sommetX);
+                analysis += `<p><strong>Sommet (Min/Max) :</strong> Il est situé en S(${sommetX.toFixed(2)} ; ${sommetY.toFixed(2)}). C'est le point où la dérivée f'(x) est nulle (pente = 0).</p>`;
+            } else {
+                 analysis += `<p><strong>Sommet :</strong> Le sommet n'existe pas, c'est une droite !</p>`;
+            }
+            
+
+            // 3. Racines (Delta)
+            if (a !== 0) {
+                if (discriminant > 0) {
+                    const x1 = (-b - Math.sqrt(discriminant)) / (2 * a);
+                    const x2 = (-b + Math.sqrt(discriminant)) / (2 * a);
+                    analysis += `<p style="font-weight: 600;">✅ Racines ($\Delta > 0$) :</p><p>Elle coupe l'axe des x deux fois en $x_1 \approx ${x1.toFixed(2)}$ et $x_2 \approx ${x2.toFixed(2)}$.</p>`;
+                } else if (discriminant === 0) {
+                    const x0 = -b / (2 * a);
+                    analysis += `<p style="font-weight: 600;">🤝 Racines ($\Delta = 0$) :</p><p>Elle touche l'axe des x en un seul point (rebond) en $x_0 \approx ${x0.toFixed(2)}$.</p>`;
+                } else {
+                    analysis += `<p style="font-weight: 600;">🚫 Racines ($\Delta < 0$) :</p><p>Le graphe flotte en l'air et n'a aucune racine réelle ! Il ne touche jamais l'axe des x.</p>`;
+                }
+            }
+
+            analysisDiv.innerHTML = `<strong>Analyse de la courbe :</strong><br>` + analysis;
+        }
+        
+        // Fonction utilitaire pour récupérer les variables CSS
+        function varToRgb(variable) {
+            const style = getComputedStyle(document.body);
+            return style.getPropertyValue(variable).trim();
+        }
+
+        function initGraph() {
+            canvas = document.getElementById('graphCanvas');
+            ctx = canvas.getContext('2d');
+            canvas.width = 400; // Taille fixe pour la démo, mais s'adapte en CSS
+            canvas.height = 400;
+
+            const sliderA = document.getElementById('sliderA');
+            const sliderB = document.getElementById('sliderB');
+            const sliderC = document.getElementById('sliderC');
+            
+            sliderA.addEventListener('input', updateCoefficients);
+            sliderB.addEventListener('input', updateCoefficients);
+            sliderC.addEventListener('input', updateCoefficients);
+
+            updateCoefficients(); // Premier tracé
+            window.isGraphInitialized = true;
+        }
+        
+        // ----------------------------------------------
+        // 4. GESTION DU MINI-QUIZ
+        // ----------------------------------------------
+        const quizQuestions = [
+            // Probabilités (P)
+            { type: 'P', q: "Si la probabilité d'un événement est 0.7, quelle est la probabilité de son événement contraire ?", ans: "0.3" },
+            { type: 'P', q: "L'ensemble de tous les résultats possibles d'une expérience aléatoire s'appelle...", ans: "Univers", typeAns: "text" },
+            { type: 'P', q: "Dans un modèle équiprobable, l'événement {1, 3, 5} lors d'un lancer de dé a une probabilité de...", ans: "0.5" },
+            { type: 'P', q: "La probabilité conditionnelle P(B | A) se lit : Probabilité de B...", ans: "sachant A", typeAns: "text" },
+            { type: 'P', q: "Quelle est la probabilité que la valeur d'une probabilité dépasse 1 ?", ans: "0", typeAns: "number" },
+            
+            // Polynômes (F)
+            { type: 'F', q: "Quel est le degré du polynôme f(x) = 5x⁴ - 2x⁵ + 1 ?", ans: "5" },
+            { type: 'F', q: "Que signifie concrètement une 'racine' pour un polynôme ?", ans: "f(x)=0", typeAns: "text" },
+            { type: 'F', q: "Si le discriminant Δ d'un polynôme de degré 2 est négatif, combien y a-t-il de racines réelles ?", ans: "0" },
+            { type: 'F', q: "La dérivée f'(x) d'une fonction nous donne une information sur sa...", ans: "pente", typeAns: "text" },
+            { type: 'F', q: "Quelle est la dérivée de f(x) = 10x ?", ans: "10" }
+        ];
+
+        let currentQuizQuestions = [];
+
+        function generateQuiz() {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = '';
+            
+            // Sélectionner 5 P et 5 F aléatoirement
+            const probaQuestions = shuffleArray(quizQuestions.filter(q => q.type === 'P')).slice(0, 5);
+            const polyQuestions = shuffleArray(quizQuestions.filter(q => q.type === 'F')).slice(0, 5);
+            
+            currentQuizQuestions = shuffleArray([...probaQuestions, ...polyQuestions]);
+            
+            currentQuizQuestions.forEach((q, index) => {
+                const qType = q.typeAns === 'text' ? 'text' : 'number';
+                const html = `
+                    <div class="quiz-question">
+                        <p style="font-weight: 600;">Question ${index + 1} (${q.type === 'P' ? 'Probabilité' : 'Polynôme'}) :</p>
+                        <p>${q.q}</p>
+                        <input type="${qType}" id="quiz-q-${index}" data-answer="${q.ans.toLowerCase().trim()}" style="padding: 8px; border: 1px solid var(--color-secondary); border-radius: 4px; width: 80%; max-width: 300px;">
+                        <div id="quiz-feedback-${index}" class="feedback" style="display: none; margin-top: 10px;"></div>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+
+            document.getElementById('quizResult').style.display = 'none';
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function submitQuiz() {
+            let score = 0;
+            const total = currentQuizQuestions.length;
+            
+            for (let i = 0; i < total; i++) {
+                const input = document.getElementById(`quiz-q-${i}`);
+                const feedbackDiv = document.getElementById(`quiz-feedback-${i}`);
+                const expected = input.getAttribute('data-answer');
+                let actual = input.value.toLowerCase().trim();
+                let isCorrect = false;
+
+                // Normalisation des réponses (pour nombres et texte)
+                if (parseFloat(actual) == parseFloat(expected) && !isNaN(parseFloat(actual))) {
+                    isCorrect = true; // Comparaison numérique
+                } else if (actual === expected) {
+                    isCorrect = true; // Comparaison texte simple
+                } else {
+                    // Petite tolérance pour les réponses textuelles (ex: "l'univers" vs "univers")
+                    if (actual.includes(expected) || expected.includes(actual)) {
+                        isCorrect = true;
+                    }
+                }
+
+                if (isCorrect) {
+                    score++;
+                    feedbackDiv.className = 'feedback correct';
+                    feedbackDiv.innerHTML = '✅ Correct !';
+                } else {
+                    feedbackDiv.className = 'feedback error';
+                    feedbackDiv.innerHTML = `❌ Faux. Réponse attendue : ${expected}`;
+                }
+                feedbackDiv.style.display = 'block';
+            }
+            
+            document.getElementById('quizScore').textContent = score;
+            const messageEl = document.getElementById('quizMessage');
+
+            if (score === total) {
+                messageEl.textContent = "🤯 T'es un génie des maths ! 10/10, t'as tout déchiré !";
+            } else if (score >= total * 0.7) {
+                messageEl.textContent = "💪 Excellent score ! Quelques petits détails à revoir, mais le gros est acquis.";
+            } else {
+                messageEl.textContent = "🤔 Bon début, mais reviens sur les explications 'débiles' pour les sujets qui t'ont posé problème. Tu vas y arriver !";
+            }
+            
+            document.getElementById('quizResult').style.display = 'block';
+        }
+        
+        function resetQuiz() {
+            document.getElementById('quizContainer').innerHTML = '';
+            document.getElementById('quizResult').style.display = 'none';
+            generateQuiz();
+        }
+
+        // ==============================================
+        // INITIALISATION AU CHARGEMENT DE LA PAGE
+        // ==============================================
+        window.onload = function() {
+            // Assure que l'accueil est affiché au démarrage
+            showSection('accueil');
+            // Initialise le quiz au chargement (il sera caché)
+            generateQuiz();
+        };
+
+    </script>
+</body>
+</html>
